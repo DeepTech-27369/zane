@@ -110,3 +110,42 @@ If git reports merge conflicts, ask a mentor before you continue.
   You can also install GitHub CLI (`brew install gh`) and run `gh auth login`.
 
 You need write access to `DeepTech-27369/zane`. Ask the org owner to add you.
+
+---
+
+## Troubleshooting: "Permission denied" / error 403 when pushing from Android Studio
+
+Example error:
+```
+remote: Permission to DeepTech-27369/zane.git denied to <your-username>.
+fatal: unable to access 'https://github.com/DeepTech-27369/zane.git/': The requested URL returned error: 403
+```
+
+**Why it happens:** Android Studio uses its own GitHub login instead of the one the terminal uses.
+Our GitHub organization can block that login even when your account has access.
+
+**Quick workaround:** open the **Terminal** tab at the bottom of Android Studio and run:
+```
+git push
+```
+
+**Permanent fixes.** Try them in order and stop when one works:
+
+1. **Make Android Studio use the terminal's login**
+   - Go to **Settings > Version Control > Git** (on macOS, **Android Studio > Settings**) and untick **Use credential helper**.
+   - If you don't see that option, go to **Settings > Version Control > GitHub**, remove your account, and push again.
+     When it asks you to sign in, choose the **Git credentials / password** option, not "Log in via GitHub".
+
+2. **Approve Android Studio for the organization**
+   - On github.com, click your avatar, then go to **Settings > Applications > Authorized OAuth Apps > JetBrains IDE Integration**.
+   - Next to `DeepTech-27369`, click **Request**, or **Grant** if you are an org owner.
+   - An org owner then approves it under **Organization Settings > Third-party access > OAuth application policy**.
+
+3. **Log in with a token**
+   - On github.com, go to **Settings > Developer settings > Personal access tokens > Tokens (classic) > Generate new token**.
+   - Tick the **`repo`** scope, generate the token, and copy it.
+   - In Android Studio, go to **Settings > Version Control > GitHub**, remove your account, click **+**, then **Log in with Token...**, and paste the token.
+   - If the org uses SSO, click **Configure SSO** next to the token on GitHub and authorize it for `DeepTech-27369`.
+
+If none of these work, ask an org owner to check that you have **Write** access to the `zane` repo
+(Repo **Settings > Collaborators and teams**).
