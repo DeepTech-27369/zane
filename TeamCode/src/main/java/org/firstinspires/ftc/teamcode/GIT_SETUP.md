@@ -139,7 +139,9 @@ git push
 2. **Approve Android Studio for the organization**
    - On github.com, click your avatar, then go to **Settings > Applications > Authorized OAuth Apps > JetBrains IDE Integration**.
    - Next to `DeepTech-27369`, click **Request**, or **Grant** if you are an org owner.
-   - An org owner then approves it under **Organization Settings > Third-party access > OAuth application policy**.
+   - An org owner then approves it under **Organization Settings > Third-party access > OAuth application policy**:
+     https://github.com/organizations/DeepTech-27369/settings/oauth_application_policy
+     (find **JetBrains IDE Integration** and click **Grant**).
 
 3. **Log in with a token**
    - On github.com, go to **Settings > Developer settings > Personal access tokens > Tokens (classic) > Generate new token**.
