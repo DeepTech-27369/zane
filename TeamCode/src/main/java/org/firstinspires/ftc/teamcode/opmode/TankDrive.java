@@ -15,14 +15,15 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
  *
  * Controls:
  *   Gamepad 1 (driver)
- *     Left stick Y   = left side of the robot
- *     Right stick Y  = right side of the robot
+ *     Left stick Y   = drive forward / backward
+ *     Left stick X   = turn left / right while driving (curves)
+ *     Right stick X  = spin in place (overrides the left stick while held)
  *     Hold left bumper  = slow mode (precise driving)
  *   Gamepad 1 or Gamepad 2 (operator)
  *     Right trigger  = intake in
  *     Left trigger   = intake out
  *
- * If the robot drives backwards or spins when both sticks are pushed forward,
+ * If the robot drives backwards or spins when the left stick is pushed forward,
  * flip the directions in the "Motor directions" section below.
  */
 @TeleOp(name = "Tank Drive", group = "TeleOp")
@@ -63,8 +64,25 @@ public class TankDrive extends LinearOpMode {
         while (opModeIsActive()) {
             // ----- Drive -----
             // Pushing a stick forward gives a negative Y value, so negate it.
-            double leftPower = applyDeadzone(-gamepad1.left_stick_y);
-            double rightPower = applyDeadzone(-gamepad1.right_stick_y);
+            double drive = applyDeadzone(-gamepad1.left_stick_y);
+            double turn = applyDeadzone(gamepad1.left_stick_x);
+            double spin = applyDeadzone(gamepad1.right_stick_x);
+
+            double leftPower;
+            double rightPower;
+            if (spin != 0) {
+                // Right stick: wheels go opposite ways so the robot turns in place
+                leftPower = spin;
+                rightPower = -spin;
+            } else {
+                // Left stick: forward/back plus turning
+                leftPower = drive + turn;
+                rightPower = drive - turn;
+                // Scale down so neither side goes past full power
+                double max = Math.max(1.0, Math.max(Math.abs(leftPower), Math.abs(rightPower)));
+                leftPower /= max;
+                rightPower /= max;
+            }
 
             if (gamepad1.left_bumper) {
                 leftPower *= SLOW_MODE_SPEED;
