@@ -8,8 +8,8 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 /*
  * Intake Test
  *
- * Hardware (Expansion Hub):
- *   Motor port 0: "intakeMotor"
+ * Hardware (Control Hub):
+ *   Motor port 2: "intakeMotor"
  *
  * Controls (gamepad 1):
  *   A           = run intake in
@@ -24,7 +24,20 @@ public class IntakeTest extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        DcMotor intakeMotor = hardwareMap.get(DcMotor.class, "intakeMotor");
+        DcMotor intakeMotor = hardwareMap.tryGet(DcMotor.class, "intakeMotor");
+        if (intakeMotor == null) {
+            // Show which motors the robot actually loaded so we can see what's wrong
+            telemetry.addLine("intakeMotor NOT FOUND. Motors the robot sees:");
+            for (String name : hardwareMap.getAllNames(DcMotor.class)) {
+                telemetry.addLine("  " + name);
+            }
+            telemetry.update();
+            waitForStart();
+            while (opModeIsActive()) {
+                idle();
+            }
+            return;
+        }
         intakeMotor.setDirection(DcMotorSimple.Direction.FORWARD);
         intakeMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         intakeMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);

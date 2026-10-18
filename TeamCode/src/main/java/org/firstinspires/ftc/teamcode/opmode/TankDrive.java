@@ -9,11 +9,9 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
  * Tank Drive TeleOp
  *
  * Hardware:
- *   Control Hub motor port 0: "frontLeftMotor"
+ *   Control Hub motor port 0: "backRightMotor"
  *   Control Hub motor port 1: "backLeftMotor"
- *   Control Hub motor port 2: "frontRightMotor"
- *   Control Hub motor port 3: "backRightMotor"
- *   Expansion Hub motor port 0: "intakeMotor"
+ *   Control Hub motor port 2: "intakeMotor"
  *
  * Controls:
  *   Gamepad 1 (driver)
@@ -39,20 +37,16 @@ public class TankDrive extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        DcMotor frontLeftMotor = hardwareMap.get(DcMotor.class, "frontLeftMotor");
-        DcMotor backLeftMotor = hardwareMap.get(DcMotor.class, "backLeftMotor");
-        DcMotor frontRightMotor = hardwareMap.get(DcMotor.class, "frontRightMotor");
-        DcMotor backRightMotor = hardwareMap.get(DcMotor.class, "backRightMotor");
+        DcMotor backLeftMotor = hardwareMap.get(DcMotor.class, "left");
+        DcMotor backRightMotor = hardwareMap.get(DcMotor.class, "right");
         DcMotor intakeMotor = hardwareMap.get(DcMotor.class, "intakeMotor");
 
-        // Motor directions: motors on one side face the opposite way, so reverse the left side.
-        frontLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        // Motor directions: the two motors face opposite ways, so reverse the left one.
         backLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-        frontRightMotor.setDirection(DcMotorSimple.Direction.FORWARD);
         backRightMotor.setDirection(DcMotorSimple.Direction.FORWARD);
         intakeMotor.setDirection(DcMotorSimple.Direction.FORWARD);
 
-        DcMotor[] driveMotors = {frontLeftMotor, backLeftMotor, frontRightMotor, backRightMotor};
+        DcMotor[] driveMotors = {backLeftMotor, backRightMotor};
         for (DcMotor motor : driveMotors) {
             motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             // BRAKE makes the robot stop quickly when you let go of the sticks
@@ -77,9 +71,7 @@ public class TankDrive extends LinearOpMode {
                 rightPower *= SLOW_MODE_SPEED;
             }
 
-            frontLeftMotor.setPower(leftPower);
             backLeftMotor.setPower(leftPower);
-            frontRightMotor.setPower(rightPower);
             backRightMotor.setPower(rightPower);
 
             // ----- Intake -----
